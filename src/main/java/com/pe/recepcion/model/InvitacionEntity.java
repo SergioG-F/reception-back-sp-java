@@ -20,8 +20,9 @@ public class InvitacionEntity {
     private String nombre;
     private String correo;
     private boolean confirmado = false; // Confirmó su asistencia
-    private boolean asistio = false;    // Marcado en la puerta
     private boolean accesoEspecial = false; // ← mejor que "esAdmin"
+    private Boolean asistio;    // Marcado en la puerta
+    private LocalDateTime fechaConfirmacion;
     private LocalDateTime fecha = LocalDateTime.now();
     private String codigoQR;
     private LocalDateTime expiracionQR;

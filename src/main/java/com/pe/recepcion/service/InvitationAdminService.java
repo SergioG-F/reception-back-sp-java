@@ -55,7 +55,7 @@ public class InvitationAdminService {
         InvitacionEntity invitacion = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Invitación no encontrada"));
 
-        if (invitacion.isAsistio()) {
+        if (invitacion.isConfirmado()) {
             throw new RuntimeException("Asistencia ya fue registrada.");
         }
 

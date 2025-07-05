@@ -8,10 +8,13 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,33 +29,41 @@ public class InvitationPubliController {
     @PostMapping("/confirmar-asistencia")
     public ResponseEntity<?> confirmarAsistencia(@RequestBody Map<String, String> datos) {
         String nombre = datos.get("nombre");
-        boolean asistira = Boolean.parseBoolean(datos.get("asistio"));
+        String asistioStr = datos.get("asistio");
 
         if (nombre == null || nombre.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("❌ Debes proporcionar tu nombre.");
         }
+        if (asistioStr == null) {
+            return ResponseEntity.badRequest().body("❌ Debes indicar si asistirás o no.");
+        }
+        Boolean asistira = Boolean.parseBoolean(asistioStr);
 
         Optional<InvitacionEntity> opt = invitationRepository.findByNombre(nombre);
+        InvitacionEntity invitacion;
 
         if (opt.isPresent()) {
-            InvitacionEntity inv = opt.get();
-            if (inv.isAsistio()) {
-                return ResponseEntity.badRequest().body("⚠️ Ya registraste tu asistencia.");
-            }
-            inv.setAsistio(true);
-            inv.setAsistio(asistira);
-            invitationRepository.save(inv);
-            notificationService.notificarConfirmacion(inv);
-            return ResponseEntity.ok("✅ Confirmación  registrada correctamente.");
-        }
+            invitacion = opt.get();
+            // ⚠️ Ya registró su respuesta antes
+            if (invitacion.getAsistio() != null) {
+                String fecha = invitacion.getFechaConfirmacion() != null
+                        ? invitacion.getFechaConfirmacion().format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'a las' HH:mm"))
+                        : "previamente";
 
-        InvitacionEntity nuevo = new InvitacionEntity();
-        nuevo.setNombre(nombre);
-        nuevo.setAsistio(asistira);
-        nuevo.setAsistio(true);
-        invitationRepository.save(nuevo);
-        notificationService.notificarConfirmacion(nuevo);
-        return ResponseEntity.ok("✅ Confirmación  registrada correctamente.");
+                return ResponseEntity.badRequest().body("⚠️ Ya registraste tu asistencia el " + fecha + ".");
+            }
+
+
+        } else {
+            invitacion = new InvitacionEntity();
+            invitacion.setNombre(nombre);
+            invitacion.setFecha(LocalDateTime.now()); // fecha de creación
+        }
+        invitacion.setAsistio(asistira);                            // ✅ Guardar su decisión
+        invitacion.setFechaConfirmacion(LocalDateTime.now());       // 🕒 Guardar cuándo lo hizo
+        invitationRepository.save(invitacion);
+        notificationService.notificarConfirmacion(invitacion);
+        return ResponseEntity.ok("✅ Confirmación registrada correctamente.");
     }
     @GetMapping("/qr")
     public ResponseEntity<ByteArrayResource> obtenerQRGeneral() throws IOException {

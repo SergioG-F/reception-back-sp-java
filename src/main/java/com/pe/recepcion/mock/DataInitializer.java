@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -50,8 +51,9 @@ public class DataInitializer implements CommandLineRunner {
             invitado1.setCorreo("juan@example.com");
             invitado1.setConfirmado(true);
             invitado1.setAsistio(false);
+            invitado1.setFechaConfirmacion(LocalDateTime.now());
             invitado1.setAccesoEspecial(false);
-            invitado1.setEvento("Conferencia 2025");
+            invitado1.setEvento("Matrimonio Sergio & Massiel");
             invitado1.setTipoInvitacion("NORMAL");
             invitado1.setCreadoPorUsuarioId("admin");
 
@@ -60,31 +62,12 @@ public class DataInitializer implements CommandLineRunner {
             invitado2.setCorreo("maria@example.com");
             invitado2.setConfirmado(false);
             invitado2.setAsistio(false);
+            invitado2.setFechaConfirmacion(LocalDateTime.now());
             invitado2.setAccesoEspecial(true);
-            invitado2.setEvento("Conferencia 2025");
+            invitado2.setEvento("Matrimonio Sergio & Massiel");
             invitado2.setTipoInvitacion("VIP");
             invitado2.setCreadoPorUsuarioId("admin");
-
-            InvitacionEntity invitado3 = new InvitacionEntity();
-            invitado3.setNombre("maria perez López");
-            invitado3.setCorreo("carlos@example.com");
-            invitado3.setConfirmado(true);
-            invitado3.setAsistio(true);
-            invitado3.setAccesoEspecial(false);
-            invitado3.setEvento("Conferencia 2025");
-            invitado3.setTipoInvitacion("PONENTE");
-            invitado3.setCreadoPorUsuarioId("admin");
-            InvitacionEntity invitado4 = new InvitacionEntity();
-            invitado4.setNombre("Carlos López");
-            invitado4.setCorreo("carlos@example.com");
-            invitado4.setConfirmado(true);
-            invitado4.setAsistio(true);
-            invitado4.setAccesoEspecial(false);
-            invitado4.setEvento("Conferencia 2025");
-            invitado4.setTipoInvitacion("PONENTE");
-            invitado4.setCreadoPorUsuarioId("admin");
-
-            invitacionRepo.saveAll(List.of(invitado1, invitado2, invitado3));
+            invitacionRepo.saveAll(List.of(invitado1, invitado2));
             System.out.println("📋 Invitaciones de prueba creadas.");
         }
     }
