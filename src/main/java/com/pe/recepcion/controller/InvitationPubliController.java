@@ -3,6 +3,7 @@ package com.pe.recepcion.controller;
 import com.pe.recepcion.model.InvitacionEntity;
 import com.pe.recepcion.repository.InvitationRepository;
 import com.pe.recepcion.service.WsInvitationService;
+import com.pe.recepcion.util.CodigoMatrimonioUnico;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
@@ -37,34 +38,73 @@ public class InvitationPubliController {
         if (asistioStr == null) {
             return ResponseEntity.badRequest().body("❌ Debes indicar si asistirás o no.");
         }
-        Boolean asistira = Boolean.parseBoolean(asistioStr);
 
+        Boolean asistira = Boolean.parseBoolean(asistioStr);
         Optional<InvitacionEntity> opt = invitationRepository.findByNombre(nombre);
         InvitacionEntity invitacion;
 
         if (opt.isPresent()) {
             invitacion = opt.get();
-            // ⚠️ Ya registró su respuesta antes
+
             if (invitacion.getAsistio() != null) {
                 String fecha = invitacion.getFechaConfirmacion() != null
                         ? invitacion.getFechaConfirmacion().format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'a las' HH:mm"))
                         : "previamente";
-
                 return ResponseEntity.badRequest().body("⚠️ Ya registraste tu asistencia el " + fecha + ".");
             }
-
 
         } else {
             invitacion = new InvitacionEntity();
             invitacion.setNombre(nombre);
             invitacion.setFecha(LocalDateTime.now()); // fecha de creación
         }
-        invitacion.setAsistio(asistira);                            // ✅ Guardar su decisión
-        invitacion.setFechaConfirmacion(LocalDateTime.now());       // 🕒 Guardar cuándo lo hizo
+
+        // ✅ Solo generar código si va a asistir y no lo tiene aún
+        if (asistira && (invitacion.getCodigoMatrimonio() == null || invitacion.getCodigoMatrimonio().isEmpty())) {
+            String codigo = CodigoMatrimonioUnico.generarCodigo("MSM");
+            invitacion.setCodigoMatrimonio(codigo);
+        }
+
+        invitacion.setAsistio(asistira);
+        invitacion.setFechaConfirmacion(LocalDateTime.now());
         invitationRepository.save(invitacion);
+
         notificationService.notificarConfirmacion(invitacion);
-        return ResponseEntity.ok("✅ Confirmación registrada correctamente.");
+
+        // ✅ Mensaje final
+        String mensaje = asistira
+                ? "🎉 Gracias " + nombre + " por confirmar tu asistencia.\n" +
+                "🎟️ Tu código es: " + invitacion.getCodigoMatrimonio() + "\n✅ Guárdalo para presentarlo el día del evento."
+                : "💐 Gracias " + nombre + " por avisarnos. Te tendremos presente en espíritu.";
+        // ✅ RESPUESTA según la decisión
+        if (!asistira) {
+            return ResponseEntity.ok(Map.of("mensaje", mensaje));
+        }
+        return ResponseEntity.ok(Map.of(
+                "mensaje", mensaje,
+                "codigoMatrimonio", invitacion.getCodigoMatrimonio()
+        ));
     }
+
+    @PostMapping("/marcar-entrada/{id}")
+    public ResponseEntity<?> registrarEntrada(@PathVariable String id) {
+        Optional<InvitacionEntity> opt = invitationRepository.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+
+        InvitacionEntity invitado = opt.get();
+
+        if (Boolean.TRUE.equals(invitado.getPresente())) {
+            return ResponseEntity.badRequest().body("❗ Entrada ya registrada.");
+        }
+
+        invitado.setPresente(true);
+        invitado.setFechaEntrada(LocalDateTime.now());
+        invitationRepository.save(invitado);
+
+        notificationService.notificarConfirmacion(invitado); // WebSocket
+        return ResponseEntity.ok("✅ Entrada registrada");
+    }
+
     @GetMapping("/qr")
     public ResponseEntity<ByteArrayResource> obtenerQRGeneral() throws IOException {
         Path path = Paths.get("qr/qr-general.png");
@@ -77,6 +117,20 @@ public class InvitationPubliController {
                 .contentType(MediaType.IMAGE_PNG)
                 .body(resource);
     }
+
+    @GetMapping("/qr-entrada")
+    public ResponseEntity<ByteArrayResource> obtenerQREntrada() throws IOException {
+        Path path = Paths.get("qr/qr-entrada.png");
+        if (!Files.exists(path)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(resource);
+    }
+
 
     @GetMapping("/todos")
     public List<InvitacionEntity> listarInvitaciones() {

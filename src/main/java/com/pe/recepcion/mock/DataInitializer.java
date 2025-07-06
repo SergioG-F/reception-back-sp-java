@@ -53,6 +53,7 @@ public class DataInitializer implements CommandLineRunner {
             invitado1.setAsistio(false);
             invitado1.setFechaConfirmacion(LocalDateTime.now());
             invitado1.setAccesoEspecial(false);
+            invitado1.setCodigoMatrimonio("MSM-1");
             invitado1.setEvento("Matrimonio Sergio & Massiel");
             invitado1.setTipoInvitacion("NORMAL");
             invitado1.setCreadoPorUsuarioId("admin");
@@ -64,6 +65,7 @@ public class DataInitializer implements CommandLineRunner {
             invitado2.setAsistio(false);
             invitado2.setFechaConfirmacion(LocalDateTime.now());
             invitado2.setAccesoEspecial(true);
+            invitado2.setCodigoMatrimonio("MSM-2");
             invitado2.setEvento("Matrimonio Sergio & Massiel");
             invitado2.setTipoInvitacion("VIP");
             invitado2.setCreadoPorUsuarioId("admin");

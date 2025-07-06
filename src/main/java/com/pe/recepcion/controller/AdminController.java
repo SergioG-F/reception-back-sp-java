@@ -189,4 +189,14 @@ public class AdminController {
             return ResponseEntity.status(500).body("❌ Error al generar el QR.");
         }
     }
+
+    @PostMapping("/qr-entrada")
+    public ResponseEntity<String> generarQREntrada() {
+        try {
+            generarQRGeneral.generarQREntrada(); // Reutilizas el mismo service
+            return ResponseEntity.ok("✅ QR de entrada generado con éxito.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("❌ Error al generar el QR de entrada.");
+        }
+    }
 }

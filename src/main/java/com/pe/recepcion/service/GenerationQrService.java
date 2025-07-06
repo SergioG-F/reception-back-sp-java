@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
-
 public class GenerationQrService {
 
     public void generarQRGeneral() throws IOException, WriterException {
@@ -25,6 +24,18 @@ public class GenerationQrService {
         Files.createDirectories(path);
 
         Path archivo = path.resolve("qr-general.png");
+        MatrixToImageWriter.writeToPath(matrix, "PNG", archivo);
+    }
+
+    public void generarQREntrada() throws IOException, WriterException {
+        String url = "http://localhost:8082/marcar-entrada"; // URL pública para marcar entrada
+        QRCodeWriter writer = new QRCodeWriter();
+        BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
+
+        Path path = Paths.get("qr");
+        Files.createDirectories(path);
+
+        Path archivo = path.resolve("qr-entrada.png");
         MatrixToImageWriter.writeToPath(matrix, "PNG", archivo);
     }
 }
