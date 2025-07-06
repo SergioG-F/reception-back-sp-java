@@ -3,6 +3,7 @@ package com.pe.recepcion.service;
 import com.pe.recepcion.model.InvitacionEntity;
 import com.pe.recepcion.repository.InvitationAdminRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.Optional;
 public class InvitationRecepService {
 
     private final InvitationAdminRepository repo;
+    private final SimpMessagingTemplate messagingTemplate; // ✅ Para WebSocket
+
 
     public List<InvitacionEntity> listar() {
         return repo.findAll();
@@ -29,9 +32,12 @@ public class InvitationRecepService {
         if (invitacion.isConfirmado()) {
             throw new RuntimeException("Asistencia ya fue registrada.");
         }
-
         invitacion.setAsistio(true);
-        return repo.save(invitacion);
+        InvitacionEntity actualizada = repo.save(invitacion);
+        // ✅ Emitir actualización por WebSocket
+        messagingTemplate.convertAndSend("/topic/invitaciones", actualizada);
+
+        return actualizada;
     }
 
 }

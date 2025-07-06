@@ -39,10 +39,10 @@ public class InvitationReceptionistController {
     }
 
     // 🔹 Marcar asistencia
-    @PostMapping("/asistencia/{codigoQR}")
-    public ResponseEntity<InvitacionEntity> marcarAsistencia(@PathVariable String codigoQR) {
+    @PostMapping("/asistencia/{id}")
+    public ResponseEntity<InvitacionEntity> marcarAsistencia(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(servicio.marcarAsistencia(codigoQR));
+            return ResponseEntity.ok(servicio.marcarAsistencia(id));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
