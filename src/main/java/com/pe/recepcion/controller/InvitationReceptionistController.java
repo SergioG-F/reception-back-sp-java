@@ -6,6 +6,7 @@ import com.pe.recepcion.service.GenerationQrService;
 import com.pe.recepcion.service.InvitationRecepService;
 import com.pe.recepcion.service.WsInvitationService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +54,9 @@ public class InvitationReceptionistController {
     @PostMapping("/marcar-entrada-recepcionista/{id}")
     public ResponseEntity<?> registrarEntradaPorRecepcionista(@PathVariable String id) {
         Optional<InvitacionEntity> opt = invitationRepository.findById(id);
-        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        if (opt.isEmpty()) return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("❌ El invitado no fue encontrado. ¿Quizás fue recién agregado?");
 
         InvitacionEntity invitado = opt.get();
 

@@ -7,7 +7,9 @@ import com.pe.recepcion.repository.InvitationRepository;
 import com.pe.recepcion.repository.UserRepository;
 import com.pe.recepcion.service.GenerationQrService;
 import com.pe.recepcion.service.InvitationAdminService;
+import com.pe.recepcion.service.WsInvitationService;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @RequestMapping("/api/admin/invitaciones")
 @AllArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@Log4j2
 public class AdminController {
     // Total control: crear, editar, eliminar, listar, etc.
 
@@ -33,6 +36,8 @@ public class AdminController {
     private final InvitationRepository invitationRepository;
     private final GenerationQrService generarQRGeneral;
     private final PasswordEncoder passwordEncoder;
+    private final WsInvitationService wsService;
+
 
 
     // 🔹 Obtener todas las invitaciones
@@ -114,6 +119,7 @@ public class AdminController {
 
         try {
             InvitacionEntity guardado = servicio.guardar(i);
+            wsService.notificarConfirmacion(guardado); // 🔴 Agrega esto
             return ResponseEntity.ok(guardado);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error al generar el código QR.");
@@ -162,7 +168,9 @@ public class AdminController {
                             i.setFechaEntrada(LocalDateTime.now()); // Solo registra la primera vez que se marca como presente
                         }
                     }
-            return ResponseEntity.ok(invitationRepository.save(i));
+             InvitacionEntity actualizado = invitationRepository.save(i);
+            wsService.notificarConfirmacion(actualizado); // 🔴 Agrega esto
+            return ResponseEntity.ok(actualizado);
         }).orElse(ResponseEntity.notFound().build());
     }
 
@@ -180,9 +188,23 @@ public class AdminController {
     // 🔹 Eliminar una invitación
     @DeleteMapping("/guest/{id}")
     public ResponseEntity<Void> deleteGuests(@PathVariable String id) {
+        Optional<InvitacionEntity> invitado = invitationRepository.findById(id);
         try {
-            servicio.eliminarGuests(id);
-            return ResponseEntity.noContent().build();
+            log.info("Eliminando invitación con ID: {}", id);
+            if (invitado.isPresent()) {
+                log.info("estoy presente: {}", id);
+
+
+                wsService.notificarEliminacion(id); // 🔴 NUEVO
+                log.info("apunto de ws: {}", id);
+
+                servicio.eliminarGuests(id);
+                log.info("Eliminado: {}", id);
+
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
