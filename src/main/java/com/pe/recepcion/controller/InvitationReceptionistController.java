@@ -2,6 +2,7 @@ package com.pe.recepcion.controller;
 
 import com.pe.recepcion.model.InvitacionEntity;
 import com.pe.recepcion.repository.InvitationRepository;
+import com.pe.recepcion.service.GenerationQrService;
 import com.pe.recepcion.service.InvitationRecepService;
 import com.pe.recepcion.service.WsInvitationService;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class InvitationReceptionistController {
     private final InvitationRecepService servicio;
     private final InvitationRepository invitationRepository;
     private final WsInvitationService notificationService;
+    private final GenerationQrService generarQRGeneral;
 
     // 🔹 Listar todas las invitaciones
     @GetMapping
@@ -28,20 +30,15 @@ public class InvitationReceptionistController {
         return servicio.listar();
     }
 
-    // 🔹 Buscar invitación por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<InvitacionEntity> obtenerPorId(@PathVariable String id) {
-        return servicio.buscarPorId(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
 
-    // 🔹 Verificar código QR
-    @GetMapping("/verificar/{codigoQR}")
-    public ResponseEntity<InvitacionEntity> verificar(@PathVariable String codigoQR) {
-        return servicio.buscarPorId(codigoQR)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PostMapping("/qr-entrada")
+    public ResponseEntity<String> generarQREntrada() {
+        try {
+            generarQRGeneral.generarQREntrada(); // Reutilizas el mismo service
+            return ResponseEntity.ok("✅ QR de entrada generado con éxito.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("❌ Error al generar el QR de entrada.");
+        }
     }
 
     // 🔹 Marcar asistencia

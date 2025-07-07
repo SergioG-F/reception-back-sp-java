@@ -7,7 +7,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -19,10 +18,6 @@ public class InvitationRecepService {
 
     public List<InvitacionEntity> listar() {
         return repo.findAll();
-    }
-
-    public Optional<InvitacionEntity> buscarPorId(String id) {
-        return repo.findById(id);
     }
 
     public InvitacionEntity marcarAsistencia(String id) {
