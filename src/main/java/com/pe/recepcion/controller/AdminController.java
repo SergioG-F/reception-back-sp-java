@@ -154,6 +154,14 @@ public class AdminController {
             if (datos.containsKey("nombre")) i.setNombre((String) datos.get("nombre"));
             if (datos.containsKey("confirmado")) i.setConfirmado((Boolean) datos.get("confirmado"));
             if (datos.containsKey("asistio")) i.setAsistio((Boolean) datos.get("asistio"));
+            if (datos.containsKey("presente")) i.setPresente((Boolean) datos.get("presente")); // ✅ ESTA LÍNEA ES CLAVE
+            if (datos.containsKey("presente")) {
+                        Boolean nuevoValor = (Boolean) datos.get("presente");
+                        i.setPresente(nuevoValor);
+                        if (nuevoValor != null && nuevoValor && i.getFechaEntrada() == null) {
+                            i.setFechaEntrada(LocalDateTime.now()); // Solo registra la primera vez que se marca como presente
+                        }
+                    }
             return ResponseEntity.ok(invitationRepository.save(i));
         }).orElse(ResponseEntity.notFound().build());
     }
