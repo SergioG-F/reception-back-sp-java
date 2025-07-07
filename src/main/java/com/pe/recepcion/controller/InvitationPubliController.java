@@ -86,23 +86,51 @@ public class InvitationPubliController {
         ));
     }
 
-    @PostMapping("/marcar-entrada/{id}")
-    public ResponseEntity<?> registrarEntrada(@PathVariable String id) {
-        Optional<InvitacionEntity> opt = invitationRepository.findById(id);
-        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+    @PostMapping("/marcar-entrada")
+    public ResponseEntity<?> registrarEntradaFlexible(@RequestBody Map<String, String> body) {
+        String codigo = body.get("codigoMatrimonio");
+        String nombre = body.get("nombre");
+        String modo = body.getOrDefault("modoEntrada", "manual");
 
-        InvitacionEntity invitado = opt.get();
+        InvitacionEntity invitado = null;
 
-        if (Boolean.TRUE.equals(invitado.getPresente())) {
-            return ResponseEntity.badRequest().body("❗ Entrada ya registrada.");
+        // Buscar por código
+        if (codigo != null && !codigo.isBlank()) {
+            invitado = invitationRepository.findByCodigoMatrimonio(codigo.trim()).orElse(null);
         }
 
+        // Si no se encontró por código, buscar por nombre
+        if (invitado == null && nombre != null && !nombre.isBlank()) {
+            invitado = invitationRepository.findByNombre(nombre.trim()).orElse(null);
+        }
+
+        if (invitado == null) {
+            return ResponseEntity.badRequest().body("❌ Invitado no encontrado.");
+        }
+
+        // Verificar si ya marcó entrada
+        if (Boolean.TRUE.equals(invitado.getPresente())) {
+            return ResponseEntity.badRequest().body("⚠️ Entrada ya fue registrada previamente.");
+        }
+
+        // Registrar entrada (aunque no haya confirmado asistencia)
         invitado.setPresente(true);
         invitado.setFechaEntrada(LocalDateTime.now());
+        invitado.setModoEntrada(modo);
         invitationRepository.save(invitado);
 
-        notificationService.notificarConfirmacion(invitado); // WebSocket
-        return ResponseEntity.ok("✅ Entrada registrada");
+        notificationService.notificarConfirmacion(invitado);
+
+        // Mensaje según si confirmó o no
+        String mensaje = Boolean.TRUE.equals(invitado.getAsistio())
+                ? "🎉 Entrada registrada exitosamente. ¡Bienvenido/a!"
+                : "⚠️ No confirmaste asistencia, pero te registramos la entrada. ¡Bienvenido/a igual!";
+
+        return ResponseEntity.ok(Map.of(
+                "mensaje", mensaje,
+                "nombre", invitado.getNombre(),
+                "modoEntrada", modo
+        ));
     }
 
     @GetMapping("/qr")

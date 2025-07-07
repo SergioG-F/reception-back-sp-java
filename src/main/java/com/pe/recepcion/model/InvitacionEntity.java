@@ -33,5 +33,6 @@ public class InvitacionEntity {
     private String evento;
     private String tipoInvitacion; // Ejemplo: "NORMAL, VIP, PONENTE, etc.
     private String creadoPorUsuarioId; // ID del usuario que la creó
+    private String modoEntrada; // "qr" o "manual"
 
 }

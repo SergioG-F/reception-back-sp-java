@@ -57,6 +57,7 @@ public class DataInitializer implements CommandLineRunner {
             invitado1.setEvento("Matrimonio Sergio & Massiel");
             invitado1.setTipoInvitacion("NORMAL");
             invitado1.setCreadoPorUsuarioId("admin");
+            invitado1.setModoEntrada("qr");
 
             InvitacionEntity invitado2 = new InvitacionEntity();
             invitado2.setNombre("María Gómez");
@@ -69,6 +70,7 @@ public class DataInitializer implements CommandLineRunner {
             invitado2.setEvento("Matrimonio Sergio & Massiel");
             invitado2.setTipoInvitacion("VIP");
             invitado2.setCreadoPorUsuarioId("admin");
+            invitado2.setModoEntrada("manual");
             invitacionRepo.saveAll(List.of(invitado1, invitado2));
             System.out.println("📋 Invitaciones de prueba creadas.");
         }
