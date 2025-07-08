@@ -6,7 +6,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -16,8 +19,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
+@Getter
+@Setter
+@Data
 public class JwtUtil {
+    public JwtUtil(UserRepository repo) {
+        this.repo = repo;
+    }
+
     private final UserRepository repo;
 
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor("jwt-secreto-clave-jwt-secreto-clave".getBytes(StandardCharsets.UTF_8));

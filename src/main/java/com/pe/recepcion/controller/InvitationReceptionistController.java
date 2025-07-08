@@ -6,6 +6,9 @@ import com.pe.recepcion.service.GenerationQrService;
 import com.pe.recepcion.service.InvitationRecepService;
 import com.pe.recepcion.service.WsInvitationService;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,13 +20,22 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/recepcionista/invitaciones")
-@AllArgsConstructor
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','RECEPCIONISTA')")
+@Getter
+@Setter
+@Data
 public class InvitationReceptionistController {
     private final InvitationRecepService servicio;
     private final InvitationRepository invitationRepository;
     private final WsInvitationService notificationService;
     private final GenerationQrService generarQRGeneral;
+
+    public InvitationReceptionistController(InvitationRecepService servicio, InvitationRepository invitationRepository, WsInvitationService notificationService, GenerationQrService generarQRGeneral) {
+        this.servicio = servicio;
+        this.invitationRepository = invitationRepository;
+        this.notificationService = notificationService;
+        this.generarQRGeneral = generarQRGeneral;
+    }
 
     // 🔹 Listar todas las invitaciones
     @GetMapping

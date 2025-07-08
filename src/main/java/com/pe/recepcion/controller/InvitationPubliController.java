@@ -5,6 +5,9 @@ import com.pe.recepcion.repository.InvitationRepository;
 import com.pe.recepcion.service.WsInvitationService;
 import com.pe.recepcion.util.CodigoMatrimonioUnico;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +25,18 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/public/invitaciones")
-@AllArgsConstructor
+
+@Getter
+@Setter
+@Data
 public class InvitationPubliController {
     private final InvitationRepository invitationRepository;
     private final WsInvitationService notificationService;
+
+    public InvitationPubliController(InvitationRepository invitationRepository, WsInvitationService notificationService) {
+        this.invitationRepository = invitationRepository;
+        this.notificationService = notificationService;
+    }
 
     @PostMapping("/confirmar-asistencia")
     public ResponseEntity<?> confirmarAsistencia(@RequestBody Map<String, String> datos) {

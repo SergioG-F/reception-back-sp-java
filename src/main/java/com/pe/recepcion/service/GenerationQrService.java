@@ -5,6 +5,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,9 +15,11 @@ import java.nio.file.Paths;
 
 @Service
 public class GenerationQrService {
+    @Value("${server.port}")
+    private String backendPort;
 
     public void generarQRGeneral() throws IOException, WriterException {
-        String url = "http://localhost:8082/confirmar-asistencia"; // URL pública para confirmar
+        String url = backendPort+"/confirmar-asistencia"; // URL pública para confirmar
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
 
@@ -28,7 +31,7 @@ public class GenerationQrService {
     }
 
     public void generarQREntrada() throws IOException, WriterException {
-        String url = "http://localhost:8082/marcar-entrada"; // URL pública para marcar entrada
+        String url = backendPort+"/marcar-entrada"; // URL pública para marcar entrada
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
 

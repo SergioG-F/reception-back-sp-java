@@ -5,7 +5,10 @@ import com.pe.recepcion.dto.response.AuthResponse;
 import com.pe.recepcion.jwt.JwtUtil;
 import com.pe.recepcion.model.UsuarioEntity;
 import com.pe.recepcion.repository.UserRepository;
+import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,9 +27,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_ADMIN')")
+@Getter
+@Setter
+@Data
 public class AuthController {
+    public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserRepository userRepo) {
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.userRepo = userRepo;
+    }
+
 
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;

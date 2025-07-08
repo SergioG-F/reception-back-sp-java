@@ -1,6 +1,7 @@
 # === BACKEND (Java / Spring Boot) ===
 HELP.md
-target/
+#tenemos que ignorar el archivo de ayuda para el deploy
+#target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

@@ -12,13 +12,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class InvitationAdminService {
 
     private final InvitationRepository invitationRepository;
     private final UserRepository userRepository;
     private final InvitationAdminRepository repo;
 
+    public InvitationAdminService(InvitationRepository invitationRepository, UserRepository userRepository, InvitationAdminRepository repo) {
+        this.invitationRepository = invitationRepository;
+        this.userRepository = userRepository;
+        this.repo = repo;
+    }
 
     public List<UsuarioEntity> listarUsers() {
         return userRepository.findAll();

@@ -5,7 +5,10 @@ import com.pe.recepcion.model.Rol;
 import com.pe.recepcion.model.UsuarioEntity;
 import com.pe.recepcion.repository.InvitationAdminRepository;
 import com.pe.recepcion.repository.UserRepository;
+import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,12 +17,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
+@Getter
+@Setter
+@Data
 public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
     private final InvitationAdminRepository invitacionRepo;
 
+    public DataInitializer(UserRepository userRepo, PasswordEncoder passwordEncoder, InvitationAdminRepository invitacionRepo) {
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
+        this.invitacionRepo = invitacionRepo;
+    }
 
     @Override
     public void run(String... args) {
