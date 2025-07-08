@@ -15,11 +15,11 @@ import java.nio.file.Paths;
 
 @Service
 public class GenerationQrService {
-    @Value("${backend.url}")
-    private String backendUrl;
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     public void generarQRGeneral() throws IOException, WriterException {
-        String url = backendUrl+"/confirmar-asistencia"; // URL pública para confirmar
+        String url = frontendUrl +"/confirmar-asistencia"; // URL pública Frontend
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
 
@@ -31,7 +31,7 @@ public class GenerationQrService {
     }
 
     public void generarQREntrada() throws IOException, WriterException {
-        String url = backendUrl+"/marcar-entrada"; // URL pública para marcar entrada
+        String url = frontendUrl +"/marcar-entrada"; //URL pública Frontend
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
 
