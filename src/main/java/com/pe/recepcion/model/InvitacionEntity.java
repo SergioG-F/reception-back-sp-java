@@ -16,18 +16,20 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor
 public class InvitacionEntity {
     @Id
     private String id;
     private String nombre;
     private String correo;
+    @Builder.Default
     private boolean confirmado = false; // Confirmó su asistencia
+    @Builder.Default
     private boolean accesoEspecial = false; // ← mejor que "esAdmin"
     private Boolean asistio;    // confirmó que asistirá (semanas antes)
     private Boolean presente;    // presencia real el día del evento
     private LocalDateTime fechaConfirmacion;
     private LocalDateTime fechaEntrada;
+    @Builder.Default
     private LocalDateTime fecha = LocalDateTime.now();
     @Indexed(unique = true, sparse = true)
     private String codigoMatrimonio; // Código de Matrimonio (si aplica)
