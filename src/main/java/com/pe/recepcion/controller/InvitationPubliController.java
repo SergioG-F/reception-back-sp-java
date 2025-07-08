@@ -175,4 +175,9 @@ public class InvitationPubliController {
     public List<InvitacionEntity> listarInvitaciones() {
         return invitationRepository.findAll();
     }
+
+    @GetMapping("/ping")
+    public ResponseEntity<String> pingRender() {
+        return ResponseEntity.ok("ping para render ");
+    }
 }

@@ -17,7 +17,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 // Rutas públicas y de login
                 registry.addMapping("/api/public/**")// frontend React
-                        .allowedOrigins(frontendUrl)
+                        .allowedOrigins(frontendUrl,"*") // Publico
                         .allowedMethods("GET", "POST", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false);
