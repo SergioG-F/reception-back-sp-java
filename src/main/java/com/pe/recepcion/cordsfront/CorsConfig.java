@@ -21,6 +21,12 @@ public class CorsConfig {
                         .allowedMethods("GET", "POST", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(false);
+                // Rutas públicas para levantar el servidor en Render
+                registry.addMapping("/**")
+                        .allowedOrigins(frontendUrl)
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
 
                 registry.addMapping("/api/auth/**")
                         .allowedOrigins(frontendUrl)

@@ -4,7 +4,6 @@ import com.pe.recepcion.model.InvitacionEntity;
 import com.pe.recepcion.repository.InvitationRepository;
 import com.pe.recepcion.service.WsInvitationService;
 import com.pe.recepcion.util.CodigoMatrimonioUnico;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -176,8 +175,5 @@ public class InvitationPubliController {
         return invitationRepository.findAll();
     }
 
-    @GetMapping("/ping")
-    public ResponseEntity<String> pingRender() {
-        return ResponseEntity.ok("ping para render ");
-    }
+
 }
