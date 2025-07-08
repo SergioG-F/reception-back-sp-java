@@ -23,6 +23,7 @@ com\pe\recepcion\service\InvitationAdminService.class
 com\pe\recepcion\service\WsInvitationService.class
 com\pe\recepcion\service\GenerationQrService.class
 com\pe\recepcion\dto\response\AuthResponse.class
+com\pe\recepcion\controller\RenderWakeUpController.class
 com\pe\recepcion\controller\InvitationPubliController.class
 com\pe\recepcion\model\Rol.class
 com\pe\recepcion\jwt\JwtFilter.class
