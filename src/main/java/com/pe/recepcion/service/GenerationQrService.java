@@ -19,7 +19,7 @@ public class GenerationQrService {
     private String frontendUrl;
 
     public void generarQRGeneral() throws IOException, WriterException {
-        String url = frontendUrl +"/confirmar-asistencia"; // URL pública Frontend
+        String url = frontendUrl +"/asistencia"; // URL pública Frontend
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
 
@@ -31,7 +31,7 @@ public class GenerationQrService {
     }
 
     public void generarQREntrada() throws IOException, WriterException {
-        String url = frontendUrl +"/marcar-entrada"; //URL pública Frontend
+        String url = frontendUrl +"/entrada-evento"; //URL pública Frontend
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix matrix = writer.encode(url, BarcodeFormat.QR_CODE, 300, 300);
 
