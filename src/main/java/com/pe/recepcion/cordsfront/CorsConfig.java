@@ -17,16 +17,10 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 // Rutas públicas y de login
                 registry.addMapping("/api/public/**")// frontend React
-                        .allowedOrigins(frontendUrl,"*") // Publico
+                        .allowedOrigins(frontendUrl) // Publico
                         .allowedMethods("GET", "POST", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
-                // Rutas públicas para levantar el servidor en Render
-                registry.addMapping("/**")
-                        .allowedOrigins(frontendUrl)
-                        .allowedMethods("*")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(false); // 🔥 importante si usas cookies o auth con withCredentials
 
                 registry.addMapping("/api/auth/**")
                         .allowedOrigins(frontendUrl)
@@ -48,6 +42,14 @@ public class CorsConfig {
                         .allowedMethods("GET", "POST", "PUT", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
+
+                // Rutas públicas para levantar el servidor en Render
+                // Para Render y UptimeRobot: acceso libre a /ping y otros
+                registry.addMapping("/**")
+                        .allowedOrigins("*") // ✅ público para que Render/UptimeRobot hagan ping
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(false); // ✅ correcto: "*" y allowCredentials no pueden ir juntos
 
             }
 
