@@ -85,7 +85,7 @@ public class InvitationPubliController {
         String mensaje = asistira
                 ? "🎉 Gracias " + nombre + " por confirmar tu asistencia.\n" +
                 "🎟️ Tu código es: " + invitacion.getCodigoMatrimonio() + "\n✅ Guárdalo para presentarlo el día del evento."
-                : "💐 Gracias " + nombre + " por avisarnos. Te tendremos presente en espíritu.";
+                : "💐 Gracias " + nombre + " por avisarnos. Te tendremos presente en nuestros corazones.";
         // ✅ RESPUESTA según la decisión
         if (!asistira) {
             return ResponseEntity.ok(Map.of("mensaje", mensaje));
@@ -120,7 +120,7 @@ public class InvitationPubliController {
 
         // Verificar si ya marcó entrada
         if (Boolean.TRUE.equals(invitado.getPresente())) {
-            return ResponseEntity.badRequest().body("⚠️ Entrada ya fue registrada previamente.");
+            return ResponseEntity.badRequest().body("YA_REGISTRADO: Entrada ya fue registrada previamente.");
         }
 
         // Registrar entrada (aunque no haya confirmado asistencia)
