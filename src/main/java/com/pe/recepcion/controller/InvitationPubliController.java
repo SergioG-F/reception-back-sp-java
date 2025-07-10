@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -56,12 +58,19 @@ public class InvitationPubliController {
         if (opt.isPresent()) {
             invitacion = opt.get();
 
-            if (invitacion.getAsistio() != null) {
-                String fecha = invitacion.getFechaConfirmacion() != null
-                        ? invitacion.getFechaConfirmacion().format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'a las' HH:mm"))
-                        : "previamente";
-                return ResponseEntity.badRequest().body("⚠️ Ya registraste tu asistencia el " + fecha + ".");
+            String fecha;
+            if (invitacion.getFechaConfirmacion() != null) {
+                // Convierte LocalDateTime a ZonedDateTime en zona del servidor (GMT aquí)
+                ZonedDateTime zonedFechaConfirmacion = invitacion.getFechaConfirmacion()
+                        .atZone(ZoneId.of("GMT"))
+                        // Cambia la zona a America/Lima, ajustando la hora correctamente
+                        .withZoneSameInstant(ZoneId.of("America/Lima"));
+                // Formatea la fecha para mostrar
+                fecha = zonedFechaConfirmacion.format(DateTimeFormatter.ofPattern("dd 'de' MMMM 'a las' HH:mm"));
+            } else {
+                fecha = "previamente";
             }
+            return ResponseEntity.badRequest().body("⚠️ Ya registraste tu asistencia el " + fecha + ".");
 
         } else {
             invitacion = new InvitacionEntity();
