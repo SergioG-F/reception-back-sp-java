@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,8 @@ public class RenderWakeUpController {
         Map<String,String> info = new HashMap<>();
         info.put("hora render", LocalDateTime.now().toString());
         info.put("zona render", TimeZone.getDefault().getID());
+        info.put("zona Peru", String.valueOf(ZonedDateTime.now(ZoneId.of("America/Lima"))));
+
         return info;
     }
 

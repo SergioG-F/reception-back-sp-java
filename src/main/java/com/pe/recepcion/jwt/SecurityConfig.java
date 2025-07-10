@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth -> auth
                                 .requestMatchers("/ws/**").permitAll() // ✅ Permite WebSocket público
-                                .requestMatchers("/ping","/info-servidor-render","info-render","/api/auth/**", "/api/public/invitaciones/**").permitAll()
+                                .requestMatchers("/ping","/info-servidor-render","/info-render","/api/auth/**", "/api/public/invitaciones/**").permitAll()
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/recepcionista/**").hasAnyRole("ADMIN", "RECEPCIONISTA")
                                 .anyRequest().authenticated()

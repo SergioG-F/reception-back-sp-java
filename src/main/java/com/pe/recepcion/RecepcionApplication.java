@@ -10,7 +10,7 @@ import java.util.TimeZone;
 public class RecepcionApplication {
 	@PostConstruct
 	public void init() {
-		TimeZone.setDefault(TimeZone.getTimeZone("America/Caracas"));
+		TimeZone.setDefault(TimeZone.getTimeZone("America/Lima"));
 	}
 	public static void main(String[] args) {
 		SpringApplication.run(RecepcionApplication.class, args);
