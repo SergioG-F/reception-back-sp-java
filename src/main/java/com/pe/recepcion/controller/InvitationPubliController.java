@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -33,10 +34,13 @@ import java.util.Optional;
 public class InvitationPubliController {
     private final InvitationRepository invitationRepository;
     private final WsInvitationService notificationService;
+    private final SimpMessagingTemplate messagingTemplate; // ✅ Para WebSocket
 
-    public InvitationPubliController(InvitationRepository invitationRepository, WsInvitationService notificationService) {
+    public InvitationPubliController(InvitationRepository invitationRepository, WsInvitationService notificationService,
+            SimpMessagingTemplate messagingTemplate) {
         this.invitationRepository = invitationRepository;
         this.notificationService = notificationService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @PostMapping("/confirmar-asistencia")
@@ -89,6 +93,8 @@ public class InvitationPubliController {
         invitationRepository.save(invitacion);
 
         notificationService.notificarConfirmacion(invitacion);
+        // ✅ Emitir actualización por WebSocket
+        messagingTemplate.convertAndSend("/topic/invitaciones", invitacion);
 
         // ✅ Mensaje final
         String mensaje = asistira
@@ -114,8 +120,13 @@ public class InvitationPubliController {
         InvitacionEntity invitado = null;
 
         // Buscar por código
+        // 🔧 CAMBIO: Aceptar código con o sin prefijo MSM-
         if (codigo != null && !codigo.isBlank()) {
-            invitado = invitationRepository.findByCodigoMatrimonio(codigo.trim()).orElse(null);
+            String codigoLimpio = codigo.trim().toUpperCase();
+            if (!codigoLimpio.startsWith("MSM-")) {
+                codigoLimpio = "MSM-" + codigoLimpio;
+            }
+            invitado = invitationRepository.findByCodigoMatrimonio(codigoLimpio).orElse(null);
         }
 
         // Si no se encontró por código, buscar por nombre
@@ -134,21 +145,28 @@ public class InvitationPubliController {
 
         // Registrar entrada (aunque no haya confirmado asistencia)
         invitado.setPresente(true);
-        invitado.setFechaEntrada(LocalDateTime.now());
+        ZonedDateTime nowLima = ZonedDateTime.now(ZoneId.of("America/Lima"));
+        invitado.setFechaEntrada(nowLima.toLocalDateTime());  // ✅ aquí conviertes a LocalDateTime
         invitado.setModoEntrada(modo);
-        invitationRepository.save(invitado);
 
+        invitationRepository.save(invitado);
         notificationService.notificarConfirmacion(invitado);
+        // Formatear esa misma hora para mostrar en el mensaje
+        String fechaFormateada = nowLima.format(
+                DateTimeFormatter.ofPattern("dd 'de' MMMM 'a las' HH:mm")
+        );
 
         // Mensaje según si confirmó o no
         String mensaje = Boolean.TRUE.equals(invitado.getAsistio())
-                ? "🎉 Entrada registrada exitosamente. ¡Bienvenido/a!"
-                : "⚠️ No confirmaste asistencia, pero te registramos la entrada. ¡Bienvenido/a igual!";
+                ? "🎉 Entrada registrada exitosamente el " + fechaFormateada  + ". ¡Bienvenido/a! "
+                : "⚠️ No confirmaste asistencia, pero te registramos la entrada el " + fechaFormateada + ". ¡Bienvenido/a igual!";
 
         return ResponseEntity.ok(Map.of(
                 "mensaje", mensaje,
                 "nombre", invitado.getNombre(),
-                "modoEntrada", modo
+                "modoEntrada", modo,
+                "codigoMatrimonio", invitado.getCodigoMatrimonio()  // ✅ Agregado
+
         ));
     }
 

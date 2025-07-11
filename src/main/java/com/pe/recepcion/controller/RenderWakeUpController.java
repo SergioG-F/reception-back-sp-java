@@ -23,7 +23,8 @@ public class RenderWakeUpController {
 
     @GetMapping("/ping")
     public ResponseEntity<String> pingRender() {
-        return ResponseEntity.ok("ping levante no te duermaz perezoso working! ");
+        String user = System.getenv("USER");
+        return ResponseEntity.ok("ping levante no te duermaz perezoso working! " + user );
     }
     @GetMapping("/info-servidor-render")
     public Map<String, String> infoServidor() {
