@@ -74,8 +74,10 @@ public class InvitationPubliController {
             } else {
                 fecha = "previamente";
             }
-            return ResponseEntity.badRequest().body("⚠️ Ya registraste tu asistencia el " + fecha + ".");
-
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "⚠️ Ya registraste tu asistencia el " + fecha + ".",
+                    "nuevoRegistro", false
+            ));
         } else {
             invitacion = new InvitacionEntity();
             invitacion.setNombre(nombre);
@@ -107,7 +109,8 @@ public class InvitationPubliController {
         }
         return ResponseEntity.ok(Map.of(
                 "mensaje", mensaje,
-                "codigoMatrimonio", invitacion.getCodigoMatrimonio()
+                "codigoMatrimonio", invitacion.getCodigoMatrimonio(),
+                "nuevoRegistro", true
         ));
     }
 
