@@ -15,12 +15,12 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                // Rutas públicas y de login
-                registry.addMapping("/api/public/**")// frontend React
-                        .allowedOrigins(frontendUrl) // Publico
-                        .allowedMethods("GET", "POST", "OPTIONS")
+                // 🟢 Públicos (sin sesión)
+                registry.addMapping("/api/public/**")
+                        .allowedOrigins(frontendUrl)
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(false); // 🔥 importante si usas cookies o auth con withCredentials
+                        .allowCredentials(false);
 
                 registry.addMapping("/api/auth/**")
                         .allowedOrigins(frontendUrl)
@@ -43,14 +43,19 @@ public class CorsConfig {
                         .allowedHeaders("*")
                         .allowCredentials(true);
 
-                // Rutas públicas para levantar el servidor en Render
-                // Para Render y UptimeRobot: acceso libre a /ping y otros
-                registry.addMapping("/**")
-                        .allowedOrigins("*") // ✅ público para que Render/UptimeRobot hagan ping
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                // 🟡 Render y UptimeRobot (solo GET para evitar conflicto)
+                registry.addMapping("/ping")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET")
                         .allowedHeaders("*")
-                        .allowCredentials(false); // ✅ correcto: "*" y allowCredentials no pueden ir juntos
+                        .allowCredentials(false);
 
+                // 🟣 Fallback general solo GET (para pings, no afecta POST)
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET")
+                        .allowedHeaders("*")
+                        .allowCredentials(false);
             }
 
         };

@@ -38,6 +38,25 @@ public class InvitacionEntity {
     private String tipoInvitacion; // Ejemplo: "NORMAL, VIP, PONENTE, etc.
     private String creadoPorUsuarioId; // ID del usuario que la creó
     private String modoEntrada; // "qr" o "manual"
+    // NUEVO:
+    private Boolean esRepresentante; // ← true si es el que registró el grupo
+    private Integer cantidadGrupo;   // ← cantidad de personas del grupo (solo en representante)
+
+    public Boolean getEsRepresentante() {
+        return esRepresentante;
+    }
+
+    public void setEsRepresentante(Boolean esRepresentante) {
+        this.esRepresentante = esRepresentante;
+    }
+
+    public Integer getCantidadGrupo() {
+        return cantidadGrupo;
+    }
+
+    public void setCantidadGrupo(Integer cantidadGrupo) {
+        this.cantidadGrupo = cantidadGrupo;
+    }
 
     public String getId() {
         return id;

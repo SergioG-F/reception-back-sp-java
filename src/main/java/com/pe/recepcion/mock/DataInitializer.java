@@ -55,6 +55,7 @@ public class DataInitializer implements CommandLineRunner {
             userRepo.save(reception);
             System.out.println("🔐 Usuario Recepcionista creado.");
         }
+        /*
         if (invitacionRepo.count() == 0) {
             InvitacionEntity invitado1 = new InvitacionEntity();
             invitado1.setNombre("Juan Pérez");
@@ -84,5 +85,7 @@ public class DataInitializer implements CommandLineRunner {
             invitacionRepo.saveAll(List.of(invitado1, invitado2));
             System.out.println("📋 Invitaciones de prueba creadas.");
         }
+
+         */
     }
 }

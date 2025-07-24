@@ -4,6 +4,7 @@ C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\mai
 C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\controller\InvitationReceptionistController.java
 C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\controller\RenderWakeUpController.java
 C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\cordsfront\CorsConfig.java
+C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\dto\request\ConfirmarAsistenciaRequest.java
 C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\dto\request\LoginRequest.java
 C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\dto\response\AuthResponse.java
 C:\Users\NTTDATA\Desktop\Sergio\projects\invitation-matri\back\recepcion\src\main\java\com\pe\recepcion\dto\response\InvitacionPublica.java

@@ -4,6 +4,7 @@ com\pe\recepcion\service\InvitationRecepService.class
 com\pe\recepcion\RecepcionApplication.class
 com\pe\recepcion\repository\InvitationRepository.class
 com\pe\recepcion\util\CodigoMatrimonioUnico.class
+com\pe\recepcion\dto\request\ConfirmarAsistenciaRequest.class
 com\pe\recepcion\repository\InvitationAdminRepository.class
 com\pe\recepcion\dto\request\LoginRequest.class
 com\pe\recepcion\jwt\SecurityConfig.class
